@@ -51,5 +51,9 @@ typedef struct Result {
 #define unreachable __builtin_unreachable()
 #define panick __builtin_trap()
 
+#ifndef NO_DEBUG
 #define assert(x) do { if (unlikely(!(x))) panick; } while (0)
+#else
+#define assert(x) ((void)0)
+#endif
 #endif
