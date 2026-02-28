@@ -15,7 +15,11 @@ include = include_directories(
   'include'
 )
 
+cc = meson.get_compiler('c')
+math_dep = cc.find_library('m', required: true)
+
 executable('basic', srcs,
   include_directories: include,
   install: true,
+  dependencies: [math_dep]
 )
