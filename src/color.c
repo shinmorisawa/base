@@ -21,10 +21,22 @@ static double xyz_oklab_mat2[3][3] = {
     { 0.0259040371, 0.7827717662, -0.8086757660 }
 };
 
-static double lab_delta = (double)6 / 29;
+static double xyz_oklab_mat1_i[3][3] = {
+    { 1.2270138511035211, -0.5577999806518222, 0.2812561489664678 },
+    { -0.0405801784232806, 1.11225686961683, -0.0716766786656012 },
+    { -0.0763812845057069, -0.4214819784180126, 1.5861632204407947 }
+};
+
+static double xyz_oklab_mat2_i[3][3] = {
+    { 1.0101010086264997, 0.39527151599023685, 0.21515876639733963 },
+    { 1.0101010191631066, -0.10662761851830986, -0.06449916644185308 },
+    { 1.0101010654162885, -0.09055045833844474, -1.2921305295637735 }
+};
+
+static double lab_delta = 6.0 / 29.0;
 static double lab_d65[3] = {
     95.0489 / 100.0,
-    100 / 100.0,
+    100.0 / 100.0,
     108.8840 / 100.0
 };
 
@@ -123,10 +135,34 @@ ColorOKLAB color_xyz_to_oklab(ColorXYZ xyz) {
     oklab.l = xyz_oklab_mat2[0][0] * temp.l + xyz_oklab_mat2[0][1] * temp.a + xyz_oklab_mat2[0][2] * temp.b;
     oklab.a = xyz_oklab_mat2[1][0] * temp.l + xyz_oklab_mat2[1][1] * temp.a + xyz_oklab_mat2[1][2] * temp.b;
     oklab.b = xyz_oklab_mat2[2][0] * temp.l + xyz_oklab_mat2[2][1] * temp.a + xyz_oklab_mat2[2][2] * temp.b;
-    // normalize between 0-1, apply (oklab.x * 1.0 - 0.5) for going back
-    oklab.a = (oklab.a + 0.5) / 1.0;
-    oklab.b = (oklab.b + 0.5) / 1.0;
     return oklab;
+}
+
+ColorOKLAB color_oklch_to_oklab(ColorOKLCH oklch) {
+    ColorOKLAB oklab = {0};
+
+    // undo the chroma compression
+    oklch.c = oklch.c / (1.0 - oklch.c);
+
+    // ez polar conversions :D
+    oklab.l = oklch.l;
+    oklab.a = oklch.c * cos(oklch.h * M_PI * 2.0);
+    oklab.b = oklch.c * sin(oklch.h * M_PI * 2.0);
+
+    return oklab;
+}
+
+ColorOKLCH color_oklab_to_oklch(ColorOKLAB oklab) {
+    ColorOKLCH oklch = {0};
+
+    oklch.l = oklab.l;
+    oklch.c = sqrt((oklab.a * oklab.a) + (oklab.b * oklab.b));
+    oklch.h = atan2(oklab.b, oklab.a) / M_PI / 2.0;
+
+    // chroma compression :)
+    oklch.c = oklch.c / (1.0 + oklch.c);
+
+    return oklch;
 }
 
 static double xyz_lab_conv_helper(double t) {
@@ -145,5 +181,26 @@ ColorXYZ color_lab_to_xyz(ColorLAB lab) {
     xyz.x = lab_d65[0] * xyz_lab_conv_helper((lab.l + 16.0) / 116.0 + (lab.a / 500.0));
     xyz.y = lab_d65[1] * xyz_lab_conv_helper((lab.l + 16.0) / 116.0);
     xyz.z = lab_d65[2] * xyz_lab_conv_helper((lab.l + 16.0) / 116.0 - (lab.b / 200.0));
+    return xyz;
+}
+
+ColorXYZ color_oklab_to_xyz(ColorOKLAB oklab) {
+    ColorXYZ xyz = {0};
+    ColorOKLAB temp = {0};
+
+    // multiply by inverse mat2
+    temp.l = xyz_oklab_mat2_i[0][0] * oklab.l + xyz_oklab_mat2_i[0][1] * oklab.a + xyz_oklab_mat2_i[0][2] * oklab.b;
+    temp.a = xyz_oklab_mat2_i[1][0] * oklab.l + xyz_oklab_mat2_i[1][1] * oklab.a + xyz_oklab_mat2_i[1][2] * oklab.b;
+    temp.b = xyz_oklab_mat2_i[2][0] * oklab.l + xyz_oklab_mat2_i[2][1] * oklab.a + xyz_oklab_mat2_i[2][2] * oklab.b;
+
+    // cube to undo the cuberoot
+    temp.l = pow(temp.l, 3.0);
+    temp.a = pow(temp.a, 3.0);
+    temp.b = pow(temp.b, 3.0);
+
+    xyz.x = xyz_oklab_mat1_i[0][0] * temp.l + xyz_oklab_mat1_i[0][1] * temp.a + xyz_oklab_mat1_i[0][2] * temp.b;
+    xyz.y = xyz_oklab_mat1_i[1][0] * temp.l + xyz_oklab_mat1_i[1][1] * temp.a + xyz_oklab_mat1_i[1][2] * temp.b;
+    xyz.z = xyz_oklab_mat1_i[2][0] * temp.l + xyz_oklab_mat1_i[2][1] * temp.a + xyz_oklab_mat1_i[2][2] * temp.b;
+
     return xyz;
 }

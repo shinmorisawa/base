@@ -40,13 +40,26 @@ typedef struct ColorXYZ {
 // so 0,1 instead of 0,255 for ColorRGB for instance
 // here be dragons!
 
+// CIE XYZ to linear sRGB D65
 ColorRGB color_xyz_to_rgb(ColorXYZ xyz);
 
+// CIE XYZ to CIE LAB
 ColorLAB color_xyz_to_lab(ColorXYZ xyz);
+// CIE LCH to CIE LAB
 ColorLAB color_lch_to_lab(ColorLCH lch);
 
+// CIE LAB to CIE LCH
 ColorLCH color_lab_to_lch(ColorLAB lab);
 
+// CIE XYZ to OKLab
 ColorOKLAB color_xyz_to_oklab(ColorXYZ xyz);
+// OKLch to OKLab
+ColorOKLAB color_oklch_to_oklab(ColorOKLCH oklch);
 
+// OKLab to OKLch
+ColorOKLCH color_oklab_to_oklch(ColorOKLAB oklab);
+
+// CIE LAB to CIE XYZ
 ColorXYZ color_lab_to_xyz(ColorLAB lab);
+// OKLab to CIE XYZ
+ColorXYZ color_oklab_to_xyz(ColorOKLAB oklab);

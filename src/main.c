@@ -9,25 +9,38 @@ int main() {
         0.9503041
     };
 
+    ColorLAB lab = {0};
+    ColorLCH lch = {0};
+    ColorOKLAB oklab = {0};
+    ColorOKLCH oklch = {0};
+    ColorXYZ output = {0};
+
     printf("start\n");
     printf("x:%f y:%f z:%f\n", xyz.x, xyz.y, xyz.z);
 
-    ColorOKLAB oklab = color_xyz_to_oklab(xyz);
-    ColorLAB lab = color_xyz_to_lab(xyz);
-    printf("ok l:%f a:%f b:%f\n", oklab.l, oklab.a, oklab.b);
-    printf("l:%f a:%f b:%f\n", lab.l, lab.a, lab.b);
+    printf("doing XYZ -> LAB -> XYZ\n");
+    lab = color_xyz_to_lab(xyz); 
+    output = color_lab_to_xyz(lab);
+    printf("output: x:%f y:%f z:%f\n", output.x, output.y, output.z);
 
-    printf("before, x:%f y:%f z:%f\n", xyz.x, xyz.y, xyz.z);
-    ColorXYZ cool = color_lab_to_xyz(lab);
-    printf("after, x:%f y:%f z:%f\n", cool.x, cool.y, cool.z);
+    printf("doing XYZ -> OKLAB -> XYZ\n");
+    oklab = color_xyz_to_oklab(xyz);
+    output = color_oklab_to_xyz(oklab);
+    printf("output: x:%f y:%f z:%f\n", output.x, output.y, output.z);
 
-    ColorLCH lch = {0};
-    printf("before, l:%f a:%f b:%f\n", lab.l, lab.a, lab.b);
+    printf("doing XYZ -> LAB -> LCH -> LAB -> XYZ\n");
+    lab = color_xyz_to_lab(xyz);
     lch = color_lab_to_lch(lab);
     lab = color_lch_to_lab(lch);
-    printf("after, l:%f a:%f b:%f\n", lab.l, lab.a, lab.b);
-    xyz = color_lab_to_xyz(lab);
-    printf("x:%f y:%f z:%f\n", xyz.x, xyz.y, xyz.z);
+    output = color_lab_to_xyz(lab);
+    printf("output: x:%f y:%f z:%f\n", output.x, output.y, output.z);
+
+    printf("doing XYZ -> OKLab -> OKLch -> OKLab -> XYZ\n");
+    oklab = color_xyz_to_oklab(xyz);
+    oklch = color_oklab_to_oklch(oklab);
+    oklab = color_oklch_to_oklab(oklch);
+    output = color_oklab_to_xyz(oklab);
+    printf("output: x:%f y:%f z:%f\n", output.x, output.y, output.z);
 
     return 0;
 }
