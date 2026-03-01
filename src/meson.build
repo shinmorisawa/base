@@ -1,4 +1,3 @@
 srcs = files(
-  'main.c',
-  'color.c'
+  'main.c'
 )

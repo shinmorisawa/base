@@ -46,7 +46,7 @@ typedef struct Result {
 #ifndef DISABLE_COMPILER_EXTENSIONS
 #define likely(x)   __builtin_expect(!!(x), 1)
 #define unlikely(x) __builtin_expect(!!(x), 0)
-#define cleanup(function, declaration) __attribute__((cleanup(function)))declaration
+#define cleanup(function) __attribute__((cleanup(function)))
 #define packed(name) __attribute__((packed))name
 #define unreachable __builtin_unreachable()
 #define panick __builtin_trap()
