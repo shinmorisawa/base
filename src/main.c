@@ -6,9 +6,9 @@
 
 void rgb_handler(ColorRGB rgb) {
     ColorRGB rgb2 = linear_to_srgb(rgb);
-    int r = rgb2.r * 255;
-    int g = rgb2.g * 255;
-    int b = rgb2.b * 255;
+    int r = clamp((int)(rgb2.r * 255), 0, 255);
+    int g = clamp((int)(rgb2.g * 255), 0, 255);
+    int b = clamp((int)(rgb2.b * 255), 0, 255);
     printf("\033[38;2;%d;%d;%dm", r - 25, g - 25, b - 25);
     printf("\033[48;2;%d;%d;%dm>.<!!\n", r, g, b);
 }

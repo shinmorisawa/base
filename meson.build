@@ -1,6 +1,11 @@
 project('basic', 'c',
   version: '0.1',
-  default_options: ['warning_level=3', 'c_std=gnu2x', 'werror=true']
+  default_options: ['warning_level=3', 'c_std=gnu2x', 'werror=true', 'optimization=3']
+)
+
+add_project_arguments(
+  '-Wno-gnu-statement-expression-from-macro-expansion',
+  language: 'c'
 )
 
 srcs = files(
