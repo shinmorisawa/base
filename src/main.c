@@ -35,15 +35,20 @@ int main() {
                           (true_random() % 1000) / 10000.0,
                           (true_random() % 1000) / 1000.0};
 
+    printf("random gradient gen\n");
+    printf("%f %f\n", oklch_1.l, oklch_2.l);
+    printf("%f %f\n", oklch_1.c, oklch_2.c);
+    printf("%f %f\n", oklch_1.h, oklch_2.h);
+
     ColorHandler handler = {0};
     handler.color_rgb = rgb_handler;
     handler.supported_spaces = RGB;
 
     color_install_handler(handler);
 
-    for (int i = 0; i < 50; i++) {
+    for (int i = 0; i < 100; i++) {
         ColorOKLCH oklch =
-            color_oklch_lerp(oklch_1, oklch_2, i / (500.0 - 1.0));
+            color_oklch_lerp(oklch_1, oklch_2, i / (100.0 - 1.0));
         Color color = {0};
         color.color_rgb = color_oklch_to_rgb(oklch);
         color.type = RGB;
