@@ -6,4 +6,5 @@ if [ ! -d build ]; then
     meson setup build -Doptimization=3
 fi
 
+clang-format -i **/*.c **/*.h
 ninja -C build

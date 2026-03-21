@@ -1,9 +1,8 @@
 #include "color.h"
-#include <stdlib.h>
+#include <fcntl.h>
 #include <stdio.h>
 #include <time.h>
 #include <unistd.h>
-#include <fcntl.h>
 
 void rgb_handler(ColorRGB rgb) {
     ColorRGB rgb2 = linear_to_srgb(rgb);
@@ -15,13 +14,11 @@ void rgb_handler(ColorRGB rgb) {
 }
 
 void clean_fd(int* fd) {
-    if (*fd >= 1) {
-        close(*fd);
-    }
+    if (*fd >= 1) { close(*fd); }
 }
 
 u64 true_random() {
-    cleanup(clean_fd, int) fd = open("/dev/random", O_RDONLY);
+    cleanup(clean_fd) int fd = open("/dev/random", O_RDONLY);
     u64 thing = 0;
     (void)read(fd, &thing, 8);
     return thing;
@@ -30,17 +27,13 @@ u64 true_random() {
 int main() {
     struct timespec ts;
 
-    ColorOKLCH oklch_1 = {
-        (true_random() % 1000) / 1000.0,
-        (true_random() % 1000) / 10000.0,
-        (true_random() % 1000) / 1000.0
-    };
+    ColorOKLCH oklch_1 = {(true_random() % 1000) / 1000.0,
+                          (true_random() % 1000) / 10000.0,
+                          (true_random() % 1000) / 1000.0};
 
-    ColorOKLCH oklch_2 = {
-        (true_random() % 1000) / 1000.0,
-        (true_random() % 1000) / 10000.0,
-        (true_random() % 1000) / 1000.0
-    };
+    ColorOKLCH oklch_2 = {(true_random() % 1000) / 1000.0,
+                          (true_random() % 1000) / 10000.0,
+                          (true_random() % 1000) / 1000.0};
 
     ColorHandler handler = {0};
     handler.color_rgb = rgb_handler;
@@ -49,7 +42,8 @@ int main() {
     color_install_handler(handler);
 
     for (int i = 0; i < 50; i++) {
-        ColorOKLCH oklch = color_oklch_lerp(oklch_1, oklch_2, i / (500.0 - 1.0));
+        ColorOKLCH oklch =
+            color_oklch_lerp(oklch_1, oklch_2, i / (500.0 - 1.0));
         Color color = {0};
         color.color_rgb = color_oklch_to_rgb(oklch);
         color.type = RGB;
