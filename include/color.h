@@ -506,6 +506,10 @@ void color_run_handler(u64 index, Color color) {
         printf("[color.h] handler index too high, specify lower index\n");
     }
 
+    if (index > handler_count) {
+        printf("[color.h] handler index does not exist\n");
+    }
+
     ColorHandler handler = handlers[index];
 
     if ((handler.supported_spaces & RGB) != 0) {
