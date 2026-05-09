@@ -98,7 +98,7 @@ typedef struct Result {
 #        define assert(x)                                                 \
             ({                                                            \
                 if (unlikely(!(x))) {                                     \
-                    printf("assert: %s at %d:%s" #x, __LINE__, __FILE__); \
+                    printf("assert: %s at %s:%d\n" #x, __FILE__, __LINE__); \
                     panick;                                               \
                 }                                                         \
             })
