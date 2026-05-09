@@ -7,6 +7,42 @@
 #include <stdint.h>
 #include <stdio.h>
 
+/* os stuff */
+#if defined(_WIN32) || defined(_WIN64)
+#    define BASE_OS_WINDOWS 1
+#elif defined(__linux__) || defined(__gnu_linux__)
+#    define BASE_OS_LINUX 1
+#elif defined(__APPLE__) || defined(__MACH__)
+#    define BASE_OS_APPLE 1
+#elif defined(__FreeBSD__)
+#    define BASE_OS_FREEBSD 1
+#else
+#    define BASE_OS_GENERIC 1
+#endif
+
+/* arch stuff */
+#if defined(__amd64__) || defined(__amd64) || defined(__x86_64) || \
+    defined(__x86_64__) || defined(_M_AMD64)
+#    define BASE_ARCH_X86_64 1
+#elif defined(__i386__) || defined(_M_IX86)
+#    define BASE_ARCH_X86 1
+#elif defined(__arm64__) || defined(__aarch64__) || defined(_M_ARM64)
+#    define BASE_ARCH_ARM64 1
+#elif defined(__arm__) || defined(_M_ARM)
+#    define BASE_ARCH_ARM32 1
+#elif defined(__riscv)
+#    define BASE_ARCH_RISCV 1
+#    if __riscv_xlen == 64
+#        define BASE_ARCH_RISCV64 1
+#    else
+#        define BASE_ARCH_RISCV32 1
+#    endif
+#elif defined(__mips__) || defined(mips) || defined(__MIPS__)
+#    define BASE_ARCH_MIPS 1
+#elif defined(__powerpc__) || defined(__ppc__) || defined(_ARCH_PPC)
+#    define BASE_ARCH_PPC 1
+#endif
+
 typedef uint8_t u8;
 typedef uint16_t u16;
 typedef uint32_t u32;
@@ -59,9 +95,12 @@ typedef struct Result {
 #    define panick            __builtin_trap()
 
 #    ifndef BASE_NO_DEBUG
-#        define assert(x)                   \
-            ({                              \
-                if (unlikely(!(x))) panick; \
+#        define assert(x)                                                 \
+            ({                                                            \
+                if (unlikely(!(x))) {                                     \
+                    printf("assert: %s at %d:%s" #x, __LINE__, __FILE__); \
+                    panick;                                               \
+                }                                                         \
             })
 #    else
 #        define assert(x) ((void)0)
@@ -96,6 +135,4 @@ typedef struct Result {
             x = (y);              \
             y = _tmp;             \
         })
-
-#    define log printf
 #endif
