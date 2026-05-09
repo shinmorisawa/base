@@ -21,12 +21,15 @@ int main() {
 
     color_install_handler(handler);
 
-    double gain = 1;
-    ColorXYZ a = color_cherenkov_to_xyz(1.33);
+    for (float i = 0.01; i < 1.5; i += 0.01) {
+        ColorXYZ a = color_cherenkov_to_xyz(1.33);
 
-    a.x *= gain;
-    a.y *= gain;
-    a.z *= gain;
-    Color color = {.color_xyz = a, .type = XYZ};
-    color_run_handler(0, color);
+        a.x *= i;
+        a.y *= i;
+        a.z *= i;
+        Color color = {.color_xyz = a, .type = XYZ};
+        color_run_handler(0, color);
+    }
+
+    return 0;
 }

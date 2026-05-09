@@ -225,13 +225,6 @@ ColorRGB color_xyz_to_rgb(ColorXYZ xyz) {
     rgb.b = xyz_rgb_mat[2][0] * xyz.x + xyz_rgb_mat[2][1] * xyz.y +
             xyz_rgb_mat[2][2] * xyz.z;
 
-    if (rgb.r > 1.0) rgb.r = 1.0;
-    if (rgb.r < 0.0) rgb.r = 0.0;
-    if (rgb.g > 1.0) rgb.g = 1.0;
-    if (rgb.g < 0.0) rgb.g = 0.0;
-    if (rgb.b > 1.0) rgb.b = 1.0;
-    if (rgb.b < 0.0) rgb.b = 0.0;
-
     return rgb;
 }
 
@@ -693,4 +686,21 @@ ColorRGB color_tonemap_lottes(ColorRGB rgb) {
     return rgb;
 }
 
+ColorRGB color_tonemap_agx(ColorRGB rgb) {
+    // stub
+    return rgb;
+}
+
+ColorRGB color_tonemap_reinhard(ColorRGB rgb) {
+    rgb.r = rgb.r / (1 + rgb.r);
+    rgb.g = rgb.g / (1 + rgb.g);
+    rgb.b = rgb.b / (1 + rgb.b);
+
+    return rgb;
+}
+
+ColorRGB color_tonemap_uchimura(ColorRGB rgb) {
+    // stub
+    return rgb;
+}
 #endif
