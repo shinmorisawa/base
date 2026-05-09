@@ -95,12 +95,12 @@ typedef struct Result {
 #    define panick            __builtin_trap()
 
 #    ifndef BASE_NO_DEBUG
-#        define assert(x)                                                 \
-            ({                                                            \
-                if (unlikely(!(x))) {                                     \
-                    printf("assert: %s at %s:%d\n" #x, __FILE__, __LINE__); \
-                    panick;                                               \
-                }                                                         \
+#        define assert(x)                                                    \
+            ({                                                               \
+                if (unlikely(!(x))) {                                        \
+                    printf("assert: %s at %s:%d\n", #x, __FILE__, __LINE__); \
+                    panick;                                                  \
+                }                                                            \
             })
 #    else
 #        define assert(x) ((void)0)

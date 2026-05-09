@@ -31,5 +31,5 @@ int main() {
         color_run_handler(0, color);
     }
 
-    return 0;
+    assert(1 == 0);
 }
