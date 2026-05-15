@@ -8,6 +8,22 @@ add_project_arguments(
   language: 'c'
 )
 
+# release args
+if get_option('buildtype') == 'release'
+  add_project_arguments(
+    '-DBASE_NO_DEBUG',
+    language: 'c'
+  )
+endif
+
+# debug args
+if get_option('buildtype') == 'debug'
+  add_project_arguments(
+    '-fno-omit-frame-pointer',
+    language: 'c'
+  )
+endif
+
 srcs = files(
   # files go here
   # (or in 'folder'/meson.build)

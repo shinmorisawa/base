@@ -2,9 +2,13 @@
 
 set -euo pipefail # thanks cloudflare!!!
 
-if [ ! -d build ]; then
-    meson setup build -Doptimization=3
+type="${1:-debug}"
+
+if [[ "$type" == "debug" ]]; then
+    meson setup build -Dbuildtype=debug -Db_sanitize=address,undefined,leak --reconfigure
+else
+    meson setup build -Dbuildtype=release --reconfigure
 fi
 
-clang-format -i **/*.c **/*.h
+find . -name "*.c" -o -name "*.h" | xargs clang-format -i
 ninja -C build

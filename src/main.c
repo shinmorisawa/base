@@ -31,5 +31,8 @@ int main() {
         color_run_handler(0, color);
     }
 
+    u8* thing = nullptr;
+    thing[2] = '4';
+
     assert(1 == 0);
 }
